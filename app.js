@@ -10,7 +10,6 @@ const outputPath = path.join(OUTPUT_DIR, "team.html")
 
 const render = require("./lib/htmlRenderer")
 
-let quitSignal = false
 let members = []
 
 init()
@@ -36,7 +35,7 @@ function askToExit() {
     .then((ans) => {
       console.log(ans)
       if (!ans.exit) {
-        return
+        console.log(render(members))
       } else {
         init()
       }
@@ -63,10 +62,26 @@ function askMemberQuestions() {
         message: "Members role: ",
         choices: ["Manager", "Intern", "Engineer"],
       },
+      {
+        type: "input",
+        name: "email",
+        message: "Members email: ",
+      },
       /* Pass your questions in here */
     ])
-    .then((answers) => {
-      members.push(answers)
+    .then((ans) => {
+      // members.push(answers)
+      switch (ans.role) {
+        case "Manager":
+          members.push(new Manager(ans.name, ans.id, ans.email))
+          break
+        case "Engineer":
+          members.push(new Engineer(ans.name, ans.id, ans.email))
+          break
+        case "Inter":
+          members.push(new Intern(ans.name, ans.id, ans.email))
+          break
+      }
       // Use user feedback for... whatever!!
     })
     .catch((error) => console.log(error))
