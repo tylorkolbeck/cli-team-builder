@@ -31,10 +31,13 @@ function askToExit() {
     ])
     .then((ans) => {
       if (!ans.exit) {
-        fs.writeFile(outputPath, render(members), (err) => {
-          if (err) console.log(err)
-          else console.log("Write Success.", outputPath)
-        })
+        if (!fs.existsSync(OUTPUT_DIR)) {
+          fs.mkdirSync(OUTPUT_DIR)
+          fs.writeFile(outputPath, render(members), (err) => {
+            if (err) console.log(err)
+            else console.log("Write Success.", outputPath)
+          })
+        }
       } else {
         init()
       }
