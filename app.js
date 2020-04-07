@@ -33,9 +33,12 @@ function askToExit() {
       },
     ])
     .then((ans) => {
-      console.log(ans)
       if (!ans.exit) {
-        console.log(render(members))
+        fs.writeFile(outputPath, render(members), (err) => {
+          if (err) console.log(err)
+          else console.log("Write Success.", outputPath)
+        })
+        // console.log(render(members))
       } else {
         init()
       }
@@ -67,20 +70,39 @@ function askMemberQuestions() {
         name: "email",
         message: "Members email: ",
       },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: "Office Number: ",
+        when: (ans) => ans.role === "Manager",
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "School: ",
+        when: (ans) => ans.role === "Intern",
+      },
+      {
+        type: "input",
+        name: "github",
+        message: "Github Username",
+        when: (ans) => ans.role === "Engineer",
+      },
       /* Pass your questions in here */
     ])
     .then((ans) => {
-      // members.push(answers)
       switch (ans.role) {
         case "Manager":
-          members.push(new Manager(ans.name, ans.id, ans.email))
-          break
+          members.push(
+            new Manager(ans.name, ans.id, ans.email, ans.officeNumber)
+          )
+          return
         case "Engineer":
-          members.push(new Engineer(ans.name, ans.id, ans.email))
-          break
-        case "Inter":
-          members.push(new Intern(ans.name, ans.id, ans.email))
-          break
+          members.push(new Engineer(ans.name, ans.id, ans.email, ans.github))
+          return
+        case "Intern":
+          members.push(new Intern(ans.name, ans.id, ans.email, ans.school))
+          return
       }
       // Use user feedback for... whatever!!
     })
