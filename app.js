@@ -59,12 +59,20 @@ function askMemberQuestions() {
         name: "id",
         message: "Members Id: ",
       },
-      {
-        type: "list",
-        name: "role",
-        message: "Members role: ",
-        choices: ["Manager", "Intern", "Engineer"],
-      },
+      // Check if there is already a Manager and show the proper prompt
+      members.find((mem) => mem.role === "Manager")
+        ? {
+            type: "list",
+            name: "role",
+            message: "Members role: ",
+            choices: ["Intern", "Engineer"],
+          }
+        : {
+            type: "list",
+            name: "role",
+            message: "Members role: ",
+            choices: ["Manager", "Intern", "Engineer"],
+          },
       {
         type: "input",
         name: "email",
